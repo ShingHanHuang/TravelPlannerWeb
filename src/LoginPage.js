@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import {GoogleOAuthProvider, GoogleLogin} from '@react-oauth/google';
+import { TextField, Button, Box, Typography, Container, Divider } from '@mui/material';
 
 function LoginPage() {
     // State hooks to handle form data
@@ -72,46 +73,64 @@ function LoginPage() {
     return (
         <GoogleOAuthProvider
             clientId="492203649703-fi1v07imcqku4jlnu5fcmo0s9p5bsm02.apps.googleusercontent.com">
-            <div style={{padding: '20px', maxWidth: '400px', margin: 'auto'}}>
-                <h2>Login</h2>
-                <form onSubmit={handleSubmit}>
-                    <div style={{marginBottom: '10px'}}>
-                        <label htmlFor="username">Username:</label>
-                        <input
-                            id="username"
-                            type="text"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            required
-                            style={{width: '100%', padding: '8px', boxSizing: 'border-box'}}
-                        />
-                    </div>
-                    <div style={{marginBottom: '10px'}}>
-                        <label htmlFor="password">Password:</label>
-                        <input
-                            id="password"
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            style={{width: '100%', padding: '8px', boxSizing: 'border-box'}}
-                        />
-                    </div>
-                    {error && <p style={{color: 'red'}}>{error}</p>}
-                    {successMessage && <p style={{color: 'green'}}>{successMessage}</p>}
-                    <button type="submit" style={{padding: '10px', width: '100%'}}>
+            <Container maxWidth="xs">
+                <Box
+                    component="form"
+                    onSubmit={handleSubmit}
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: 2,
+                        marginTop: 5,
+                        padding: 3,
+                        boxShadow: 3,
+                        borderRadius: 2,
+                        bgcolor: 'background.paper'
+                    }}
+                >
+                    <Typography variant="h4" gutterBottom>
                         Login
-                    </button>
-                    <p>Don't have an account? <Link to="/register">Register here</Link></p>
-                </form>
+                    </Typography>
+                    <TextField
+                        label="Username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        fullWidth
+                        required
+                    />
+                    <TextField
+                        label="Password"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        fullWidth
+                        required
+                    />
+                    {error && <Typography color="error">{error}</Typography>}
+                    {successMessage && <Typography color="success.main">{successMessage}</Typography>}
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        fullWidth
+                        size="large"
+                    >
+                        Login
+                    </Button>
+                    <Typography>
+                        Don't have an account? <Link to="/register">Register here</Link>
+                    </Typography>
+                </Box>
 
-                <div style={{marginTop: '20px', textAlign: 'center'}}>
+                <Divider sx={{ my: 3 }}>OR</Divider>
+
+                <Box display="flex" justifyContent="center" marginTop={2}>
                     <GoogleLogin
                         onSuccess={handleGoogleLoginSuccess}
                         onError={handleGoogleLoginError}
                     />
-                </div>
-            </div>
+                </Box>
+            </Container>
         </GoogleOAuthProvider>
     );
 }

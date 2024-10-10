@@ -6,6 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import {DatePicker} from '@mui/x-date-pickers/DatePicker';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
+import MenuIcon from '@mui/icons-material/Menu';
 
 function TripGenerator() {
     const [destination, setDestination] = useState('');
@@ -201,13 +202,21 @@ function TripGenerator() {
                     )}
                 </Box>
             </Drawer>
-
-            <Button variant="contained" onClick={toggleSidebar} sx={{
-                height: '40px',
-                width: '80px',
-                margin: 2
-            }}>
-                {isSidebarOpen ? 'Close Sidebar' : 'Open Sidebar'}
+            <Button
+                variant="contained"
+                onClick={toggleSidebar}
+                sx={{
+                    height: '40px',
+                    width: '40px',
+                    margin: 2,
+                    minWidth: '40px',
+                    padding: 0,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}
+            >
+                <MenuIcon />
             </Button>
             {loading && (
                 <Box

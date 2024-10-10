@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
+import {TextField, Button, Box, Typography, Container} from '@mui/material';
 
 function RegisterPage() {
     const [username, setUsername] = useState('');
@@ -19,7 +20,7 @@ function RegisterPage() {
                 role: 'USER',
             });
 
-            const { success, message } = response.data;
+            const {success, message} = response.data;
 
             if (success) {
                 setSuccess(message || 'Registration successful! You can now login.');
@@ -40,44 +41,53 @@ function RegisterPage() {
 
 
     return (
-        <div>
-            <h2 style={{marginLeft: '20px'}}>Register</h2>
-            <form onSubmit={handleRegister}>
-                <input
-                    type="text"
+        <Container maxWidth="xs">
+            <Box
+                component="form"
+                onSubmit={handleRegister}
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 2,
+                    marginTop: 5,
+                    padding: 3,
+                    boxShadow: 3,
+                    borderRadius: 2,
+                    bgcolor: 'background.paper',
+                }}
+            >
+                <Typography variant="h4" gutterBottom>
+                    Register
+                </Typography>
+                <TextField
+                    label="Username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Username"
-                    style={{
-                        display: 'block',
-                        marginBottom: '10px',
-                        width: '30%',
-                        paddingLeft: '10px',
-                        marginLeft: '20px',
-                        boxSizing: 'border-box'
-                    }}
+                    fullWidth
+                    required
                 />
-                <input
+                <TextField
+                    label="Password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Password"
-                    style={{
-                        display: 'block',
-                        marginBottom: '10px',
-                        width: '30%',
-                        paddingLeft: '10px',
-                        marginLeft: '20px',
-                        boxSizing: 'border-box'
-                    }}
+                    fullWidth
+                    required
                 />
-                {error && <p style={{color: 'red', marginLeft: '20px'}}>{error}</p>}
-                {success && <p style={{color: 'green', marginLeft: '20px'}}>{success}</p>}
-                <button type="submit" style={{marginLeft: '20px'}}>Register</button>
-            </form>
-        </div>
-
-
+                {error && <Typography color="error">{error}</Typography>}
+                {success && <Typography color="success.main">{success}</Typography>}
+                <Button
+                    type="submit"
+                    variant="contained"
+                    fullWidth
+                    size="large"
+                    sx={{ mt: 2 }}
+                >
+                    Register
+                </Button>
+            </Box>
+        </Container>
     );
 }
 

@@ -3,10 +3,12 @@ import 'react-datepicker/dist/react-datepicker.css';
 import axios from 'axios';
 import {TextField, Button, Drawer, List, ListItem, Typography, Divider, Box, Grid2, IconButton} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ShareIcon from '@mui/icons-material/Share'
 import {DatePicker} from '@mui/x-date-pickers/DatePicker';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
 import MenuIcon from '@mui/icons-material/Menu';
+import {useNavigate} from "react-router-dom";
 
 function TripGenerator() {
     const [destination, setDestination] = useState('');
@@ -21,11 +23,13 @@ function TripGenerator() {
     const [trips, setTrips] = useState([]);
     const userId = localStorage.getItem('username');
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
+    const navigate = useNavigate();
     useEffect(() => {
         fetchTrips();
     }, []);
-
+    const handleTripClick = (tripId) => {
+        navigate(`/trip/${tripId}`);
+    };
     const fetchTrips = async () => {
         const token = localStorage.getItem('token');
 
@@ -38,11 +42,11 @@ function TripGenerator() {
             }
         })
             .then(response => {
-                const { success, data, message } = response.data;
-                console.debug("success"+success);
+                const {success, data, message} = response.data;
+                console.debug("success" + success);
                 if (success) {
-                    console.debug("dataSize"+data.size);
-                    console.debug("data"+data.destination);
+                    console.debug("dataSize" + data.size);
+                    console.debug("data" + data.destination);
                     setTrips(data);
                 } else {
                     console.error('Error fetching trips:', message);
@@ -78,7 +82,7 @@ function TripGenerator() {
             withCredentials: true,
         })
             .then(response => {
-                const { success, data, message } = response.data;
+                const {success, data, message} = response.data;
                 if (success) {
                     setItinerary(data);
                     setError(null);
@@ -123,7 +127,7 @@ function TripGenerator() {
             }
         })
             .then(response => {
-                const { success, data, message } = response.data;
+                const {success, data, message} = response.data;
                 if (success) {
                     alert("Save successful!");
                     fetchTrips();
@@ -136,7 +140,33 @@ function TripGenerator() {
                 setError('Failed to save trip.');
             });
     };
-
+    const handleShareTrip = async(tripId) => {
+        const token = localStorage.getItem('token');
+        console.log("tripId"+tripId)
+        console.log("token"+token)
+        axios.get(`http://localhost:8080/api/trip/share/${tripId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            withCredentials: true,
+            params: {
+                userId: userId,
+            }
+        }).then(response => {
+                const {success, data, message} = response.data;
+                console.log("message"+message);
+                if (success) {
+                    alert("Trip shared successfully!");
+                } else {
+                    alert('Error sharing the trip. Please try again.');
+                }
+            })
+            .catch(err => {
+                console.error("Error sharing the trip:", error);
+                alert('Error sharing the trip. Please try again.');
+            });
+    };
     const handleDeleteTrip = (tripId) => {
         const token = localStorage.getItem('token');
 
@@ -149,7 +179,7 @@ function TripGenerator() {
             }
         })
             .then(response => {
-                const { success, data, message } = response.data;
+                const {success, data, message} = response.data;
                 if (success) {
                     alert('Trip deleted successfully');
                     fetchTrips();
@@ -181,17 +211,28 @@ function TripGenerator() {
                     {trips.length > 0 ? (
                         <List>
                             {trips.map((trip) => (
-                                <ListItem key={trip.id}>
-                                    <Box display="flex" flexDirection="column" sx={{width: '100%'}}>
+                                <ListItem key={trip.id} onClick={() => handleTripClick(trip.id)}>
+                                    <Box display="flex" flexDirection="column" sx={{ width: '100%' }}>
                                         <Typography variant="subtitle1" gutterBottom>{trip.destination}</Typography>
-                                        <Typography variant="body2"
-                                                    gutterBottom>{trip.startDate} - {trip.endDate}</Typography>
+                                        <Typography variant="body2" gutterBottom>{trip.startDate} - {trip.endDate}</Typography>
                                         <Typography variant="body2" gutterBottom>
-                                            {trip.itinerary ? (trip.itinerary.length > 30 ? trip.itinerary.substring(0, 30) + '...' : trip.itinerary) : 'No itinerary available'}
+                                            {trip.itinerary ? (trip.itinerary.length > 50 ? trip.itinerary.substring(0, 50) + '...' : trip.itinerary) : 'No itinerary available'}
                                         </Typography>
-                                        <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteTrip(trip.id)}>
-                                            <DeleteIcon />
-                                        </IconButton>
+
+                                        <Box display="flex" justifyContent="center" sx={{ marginTop: 1 }}>
+                                            <IconButton aria-label="delete" onClick={(event) => {
+                                                event.stopPropagation();
+                                                handleDeleteTrip(trip.id);
+                                            }}>
+                                                <DeleteIcon />
+                                            </IconButton>
+                                            <IconButton aria-label="share" onClick={(event) => {
+                                                event.stopPropagation();
+                                                handleShareTrip(trip.id);
+                                            }}>
+                                                <ShareIcon />
+                                            </IconButton>
+                                        </Box>
                                         <Divider sx={{ borderColor: 'black', borderWidth: 0.5, marginTop: 1 }} />
                                     </Box>
                                 </ListItem>
@@ -216,7 +257,7 @@ function TripGenerator() {
                     alignItems: 'center'
                 }}
             >
-                <MenuIcon />
+                <MenuIcon/>
             </Button>
             {loading && (
                 <Box

@@ -14,7 +14,7 @@ function LoginPage() {
 
     // Handle form submission
     const handleSubmit = async (e) => {
-        e.preventDefault(); // Prevent page reload
+        e.preventDefault();
         setError(null);
         setSuccessMessage(null);
         // Send a POST request to your backend API

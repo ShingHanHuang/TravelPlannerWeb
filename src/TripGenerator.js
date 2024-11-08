@@ -1,7 +1,19 @@
 import React, {useEffect, useState} from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import axios from 'axios';
-import {TextField, Button, Drawer, List, ListItem, Typography, Divider, Box, Grid2, IconButton} from '@mui/material';
+import {
+    TextField,
+    Button,
+    Drawer,
+    List,
+    ListItem,
+    Typography,
+    Divider,
+    Box,
+    Grid2,
+    IconButton,
+    DialogTitle, Dialog, DialogContent, DialogActions
+} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ShareIcon from '@mui/icons-material/Share'
 import {DatePicker} from '@mui/x-date-pickers/DatePicker';
@@ -24,11 +36,26 @@ function TripGenerator() {
     const userId = localStorage.getItem('username');
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const navigate = useNavigate();
+    const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
+    const [selectedTripId, setSelectedTripId] = useState(null);
+    const [posterName, setPosterName] = useState('');
     useEffect(() => {
         fetchTrips();
     }, []);
+    const handleShareClick = (tripId) => {
+        setSelectedTripId(tripId);
+        setIsShareDialogOpen(true);
+    };
+
+    const handleCloseShareDialog = () => {
+        setIsShareDialogOpen(false);
+        setPosterName('');
+    };
     const handleTripClick = (tripId) => {
         navigate(`/trip/${tripId}`);
+    };
+    const handleShareTripClick = () => {
+        navigate(`/shared-trips`);
     };
     const fetchTrips = async () => {
         const token = localStorage.getItem('token');
@@ -140,33 +167,59 @@ function TripGenerator() {
                 setError('Failed to save trip.');
             });
     };
-    const handleShareTrip = async(tripId) => {
+    const handleShare = async () => {
         const token = localStorage.getItem('token');
-        console.log("tripId"+tripId)
-        console.log("token"+token)
-        axios.get(`http://localhost:8080/api/trip/share/${tripId}`, {
+        axios.post(`http://localhost:8080/api/trip/share/${selectedTripId}`,{
+            poster: posterName
+        },{
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             },
             withCredentials: true,
-            params: {
-                userId: userId,
-            }
+
         }).then(response => {
-                const {success, data, message} = response.data;
-                console.log("message"+message);
-                if (success) {
-                    alert("Trip shared successfully!");
-                } else {
-                    alert('Error sharing the trip. Please try again.');
-                }
-            })
-            .catch(err => {
-                console.error("Error sharing the trip:", error);
+            const { success, message } = response.data;
+            if (success) {
+                alert("Trip shared successfully!");
+            } else {
                 alert('Error sharing the trip. Please try again.');
-            });
+            }
+        })
+            .catch(err => {
+                console.error("Error sharing the trip:", err);
+                alert('Error sharing the trip. Please try again.');
+            }).finally(() => {
+            handleCloseShareDialog();
+        });
     };
+    // const handleShareTrip = (tripId) => {
+    //     const token = localStorage.getItem('token');
+    //     console.log("tripId"+tripId)
+    //     console.log("token"+token)
+    //     axios.get(`http://localhost:8080/api/trip/share/${tripId}`, {
+    //         headers: {
+    //             'Authorization': `Bearer ${token}`,
+    //             'Content-Type': 'application/json'
+    //         },
+    //         withCredentials: true,
+    //         params: {
+    //             userId: userId,
+    //         }
+    //     }).then(response => {
+    //             const {success, data, message} = response.data;
+    //             console.log("message"+message);
+    //             if (success) {
+    //                 alert("Trip shared successfully!");
+    //             } else {
+    //                 alert('Error sharing the trip. Please try again.');
+    //             }
+    //         })
+    //         .catch(err => {
+    //             console.error("Error sharing the trip:", error);
+    //             alert('Error sharing the trip. Please try again.');
+    //         });
+    // };
     const handleDeleteTrip = (tripId) => {
         const token = localStorage.getItem('token');
 
@@ -226,9 +279,12 @@ function TripGenerator() {
                                             }}>
                                                 <DeleteIcon />
                                             </IconButton>
+                                            {/*<IconButton aria-label="share" onClick={() => handleShareClick(trip.id)}>*/}
+                                            {/*    <ShareIcon />*/}
+                                            {/*</IconButton>*/}
                                             <IconButton aria-label="share" onClick={(event) => {
                                                 event.stopPropagation();
-                                                handleShareTrip(trip.id);
+                                                handleShareClick(trip.id);
                                             }}>
                                                 <ShareIcon />
                                             </IconButton>
@@ -279,7 +335,17 @@ function TripGenerator() {
             )}
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <Box flex={1} padding={3}>
-                    <Typography variant="h4" gutterBottom>Generate Travel Itinerary</Typography>
+                    <Box display="flex" alignItems="center">
+                        <Typography variant="h4" gutterBottom>Generate Travel Itinerary</Typography>
+                        <Button onClick={handleShareTripClick}
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            sx={{ marginLeft: 2 }}
+                        >
+                            Share page
+                        </Button>
+                    </Box>
                     <form onSubmit={handleSubmit}>
                         <Grid2 container spacing={2} direction="column">
                             <Grid2 item xs={12}>
@@ -394,6 +460,24 @@ function TripGenerator() {
                     )}
                 </Box>
             </LocalizationProvider>
+            <Dialog open={isShareDialogOpen} onClose={handleCloseShareDialog}>
+                <DialogTitle>Share Trip</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        label="Poster Name"
+                        type="text"
+                        fullWidth
+                        value={posterName}
+                        onChange={(e) => setPosterName(e.target.value)}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseShareDialog} color="secondary">Cancel</Button>
+                    <Button onClick={handleShare} color="primary">Share</Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 }

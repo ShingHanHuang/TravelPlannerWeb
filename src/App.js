@@ -5,6 +5,7 @@ import LoginPage from './LoginPage';
 import RegisterPage from './RegisterPage';
 import TripGenerator from "./TripGenerator";
 import TripDetail from "./TripDetail";
+import SharedTripsPage from "./SharedTripsPage";
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
                     <Route path="/register" element={<RegisterPage />} />
                     <Route path="/trip_generator" element={<TripGenerator />} />
                     <Route path="/trip/:tripId" element={<TripDetail />} />
+                    <Route path="/shared-trips" element={<SharedTripsPage />} />
                 </Routes>
             </div>
         </Router>

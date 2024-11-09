@@ -77,3 +77,24 @@
     transform: rotate(360deg);
   }
 }
+.gradient-button {
+  margin-top: 16px;
+  background: linear-gradient(90deg, #00796b, #4caf50);
+  color: #fff;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.gradient-button:hover {
+  background: linear-gradient(90deg, #4caf50, #00796b);
+  transform: scale(1.05);
+}
+.share-button {
+  transition: transform 0.3s ease, color 0.3s ease;
+  color: #00796b;
+}
+
+.share-button:hover {
+  transform: rotate(15deg) scale(1.1);
+  color: #4caf50;
+}

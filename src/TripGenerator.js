@@ -21,6 +21,7 @@ import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
 import MenuIcon from '@mui/icons-material/Menu';
 import {useNavigate} from "react-router-dom";
+import './App.css';
 
 function TripGenerator() {
     const [destination, setDestination] = useState('');
@@ -237,7 +238,13 @@ function TripGenerator() {
                     {trips.length > 0 ? (
                         <List>
                             {trips.map((trip) => (
-                                <ListItem key={trip.id} onClick={() => handleTripClick(trip.id)}>
+                                <ListItem key={trip.id} onClick={() => handleTripClick(trip.id)} sx={{
+                                    '&:hover': {
+                                        transform: 'scale(1.02)',
+                                        backgroundColor: '#f0f0f0',
+                                        transition: 'transform 0.2s ease',
+                                    }
+                                }}>
                                     <Box display="flex" flexDirection="column" sx={{width: '100%'}}>
                                         <Typography variant="subtitle1" gutterBottom>{trip.destination}</Typography>
                                         <Typography variant="body2"
@@ -250,7 +257,8 @@ function TripGenerator() {
                                             <IconButton aria-label="delete" onClick={(event) => {
                                                 event.stopPropagation();
                                                 handleDeleteTrip(trip.id);
-                                            }}>
+                                            }}
+                                                        className="share-button">
                                                 <DeleteIcon/>
                                             </IconButton>
                                             {/*<IconButton aria-label="share" onClick={() => handleShareClick(trip.id)}>*/}
@@ -259,7 +267,9 @@ function TripGenerator() {
                                             <IconButton aria-label="share" onClick={(event) => {
                                                 event.stopPropagation();
                                                 handleShareClick(trip.id);
-                                            }}>
+                                            }}
+                                                        className="share-button"
+                                            >
                                                 <ShareIcon/>
                                             </IconButton>
                                         </Box>
@@ -315,6 +325,7 @@ function TripGenerator() {
                                 type="submit"
                                 variant="contained"
                                 color="primary"
+                                className="gradient-button"
                                 sx={{marginLeft: 2}}
                         >
                             Share page
@@ -413,7 +424,10 @@ function TripGenerator() {
                             variant="contained"
                             color="primary"
                             disabled={loading}
-                            sx={{marginTop: 2}}
+                            className="gradient-button"
+                            sx={{
+                                marginTop: 2,
+                            }}
                         >
                             Generate Itinerary
                         </Button>
@@ -427,14 +441,23 @@ function TripGenerator() {
                                     {paragraph}
                                 </Typography>
                             ))}
-                            <Button variant="contained" onClick={handleSave} sx={{marginY: 2}}>
+                            <Button variant="contained" onClick={handleSave} className="gradient-button"
+                                    sx={{marginY: 2}}>
                                 Save Itinerary
                             </Button>
                         </Box>
                     )}
                 </Box>
             </LocalizationProvider>
-            <Dialog open={isShareDialogOpen} onClose={handleCloseShareDialog}>
+            <Dialog open={isShareDialogOpen} onClose={handleCloseShareDialog} sx={{
+                '& .MuiDialog-paper': {
+                    borderRadius: 3,
+                    padding: 2,
+                    boxShadow: '0px 4px 15px rgba(0, 0, 0, 0.3)',
+                    backgroundColor: '#fafafa',
+                    border: '1px solid #e0e0e0',
+                }
+            }}>
                 <DialogTitle>Share Trip</DialogTitle>
                 <DialogContent>
                     <TextField

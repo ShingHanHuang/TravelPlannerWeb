@@ -169,9 +169,9 @@ function TripGenerator() {
     };
     const handleShare = async () => {
         const token = localStorage.getItem('token');
-        axios.post(`http://localhost:8080/api/trip/share/${selectedTripId}`,{
+        axios.post(`http://localhost:8080/api/trip/share/${selectedTripId}`, {
             poster: posterName
-        },{
+        }, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
@@ -179,7 +179,7 @@ function TripGenerator() {
             withCredentials: true,
 
         }).then(response => {
-            const { success, message } = response.data;
+            const {success, message} = response.data;
             if (success) {
                 alert("Trip shared successfully!");
             } else {
@@ -193,33 +193,6 @@ function TripGenerator() {
             handleCloseShareDialog();
         });
     };
-    // const handleShareTrip = (tripId) => {
-    //     const token = localStorage.getItem('token');
-    //     console.log("tripId"+tripId)
-    //     console.log("token"+token)
-    //     axios.get(`http://localhost:8080/api/trip/share/${tripId}`, {
-    //         headers: {
-    //             'Authorization': `Bearer ${token}`,
-    //             'Content-Type': 'application/json'
-    //         },
-    //         withCredentials: true,
-    //         params: {
-    //             userId: userId,
-    //         }
-    //     }).then(response => {
-    //             const {success, data, message} = response.data;
-    //             console.log("message"+message);
-    //             if (success) {
-    //                 alert("Trip shared successfully!");
-    //             } else {
-    //                 alert('Error sharing the trip. Please try again.');
-    //             }
-    //         })
-    //         .catch(err => {
-    //             console.error("Error sharing the trip:", error);
-    //             alert('Error sharing the trip. Please try again.');
-    //         });
-    // };
     const handleDeleteTrip = (tripId) => {
         const token = localStorage.getItem('token');
 
@@ -265,19 +238,20 @@ function TripGenerator() {
                         <List>
                             {trips.map((trip) => (
                                 <ListItem key={trip.id} onClick={() => handleTripClick(trip.id)}>
-                                    <Box display="flex" flexDirection="column" sx={{ width: '100%' }}>
+                                    <Box display="flex" flexDirection="column" sx={{width: '100%'}}>
                                         <Typography variant="subtitle1" gutterBottom>{trip.destination}</Typography>
-                                        <Typography variant="body2" gutterBottom>{trip.startDate} - {trip.endDate}</Typography>
+                                        <Typography variant="body2"
+                                                    gutterBottom>{trip.startDate} - {trip.endDate}</Typography>
                                         <Typography variant="body2" gutterBottom>
                                             {trip.itinerary ? (trip.itinerary.length > 50 ? trip.itinerary.substring(0, 50) + '...' : trip.itinerary) : 'No itinerary available'}
                                         </Typography>
 
-                                        <Box display="flex" justifyContent="center" sx={{ marginTop: 1 }}>
+                                        <Box display="flex" justifyContent="center" sx={{marginTop: 1}}>
                                             <IconButton aria-label="delete" onClick={(event) => {
                                                 event.stopPropagation();
                                                 handleDeleteTrip(trip.id);
                                             }}>
-                                                <DeleteIcon />
+                                                <DeleteIcon/>
                                             </IconButton>
                                             {/*<IconButton aria-label="share" onClick={() => handleShareClick(trip.id)}>*/}
                                             {/*    <ShareIcon />*/}
@@ -286,10 +260,10 @@ function TripGenerator() {
                                                 event.stopPropagation();
                                                 handleShareClick(trip.id);
                                             }}>
-                                                <ShareIcon />
+                                                <ShareIcon/>
                                             </IconButton>
                                         </Box>
-                                        <Divider sx={{ borderColor: 'black', borderWidth: 0.5, marginTop: 1 }} />
+                                        <Divider sx={{borderColor: 'black', borderWidth: 0.5, marginTop: 1}}/>
                                     </Box>
                                 </ListItem>
                             ))}
@@ -338,10 +312,10 @@ function TripGenerator() {
                     <Box display="flex" alignItems="center">
                         <Typography variant="h4" gutterBottom>Generate Travel Itinerary</Typography>
                         <Button onClick={handleShareTripClick}
-                            type="submit"
-                            variant="contained"
-                            color="primary"
-                            sx={{ marginLeft: 2 }}
+                                type="submit"
+                                variant="contained"
+                                color="primary"
+                                sx={{marginLeft: 2}}
                         >
                             Share page
                         </Button>

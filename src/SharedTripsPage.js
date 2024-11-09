@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Box, Typography, List, ListItem, Divider, Button} from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import axios from 'axios';
 import {useNavigate} from "react-router-dom";
 
@@ -34,10 +35,19 @@ const SharedTripsPage = () => {
 
     return (
         <Box p={3}>
-            <Typography variant="h4" gutterBottom>Shared Trips</Typography>
-            <Button variant="outlined" onClick={() => navigate(-1)} sx={{marginTop: 2, marginLeft: 2}}>
-                Return
-            </Button>
+            <Box display="flex" alignItems="center" marginBottom={2}>
+                <Button
+                    variant="outlined"
+                    onClick={() => navigate(-1)}
+                    sx={{ marginRight: 2 }}
+                    startIcon={<ArrowBackIcon />}
+                    size="large"
+                >
+                </Button>
+                <Typography variant="h4">
+                    Shared Trips
+                </Typography>
+            </Box>
             <List>
                 {sharedTrips.map((trip) => (
                     <ListItem key={trip.id} sx={{
